@@ -1,10 +1,8 @@
 # HandlingCaching-Android
 Handling Caching In Android
 
-Caching in Android
 
-
-1.	Clearing cache when any sensitive data is handled inside a page loaded in WebViews:
+* Clearing cache when any sensitive data is handled inside a page loaded in WebViews:
 
 If the application accesses any sensitive data with a WebView, you may want to use the clearCache() method to delete any files stored locally. Server-side headers like no-cache can also be used to indicate that an application should not cache particular content. the below code snippet explains the steps involved in detail:
 		
@@ -41,93 +39,92 @@ If the application accesses any sensitive data with a WebView, you may want to u
             webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
 
                         
-                       
-2. Clear the cache: The cache can be cleared at multiple stages in the application using the below code:
+* Clear the cache: The cache can be cleared at multiple stages in the application using the below code:
 			
-	webView.clearCache(true);
+		webView.clearCache(true);
 			
-	The cache can be cleared :
-		1. just before loading the webpage :
+		The cache can be cleared :
+			1. just before loading the webpage :
 
-			webView.clearCache(true);
-			webView.loadUrl("https://example.com/");
+				webView.clearCache(true);
+				webView.loadUrl("https://example.com/");
 
 
-		2. After loading of webpage:
+			2. After loading of webpage:
 
-			private class MyBrowser extends WebViewClient {
-			        @Override
-			        public boolean shouldOverrideUrlLoading(WebView view, String url) {
-			            /* check for the url */
-			            return false;
+				private class MyBrowser extends WebViewClient {
+				        @Override
+				        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+				            /* check for the url */
+				            return false;
 
-			        }
+				        }
 
-			        @Override
-			        public void onPageFinished(WebView view, String url){
+				        @Override
+				        public void onPageFinished(WebView view, String url){
 
-			super.onPageFinished(view, url);
-			view.clearCache(true);
+				super.onPageFinished(view, url);
+				view.clearCache(true);
 
-			        }
-			    }
-			
+				        }
+				    }
+				
 
 		
-3. The form data such as userId , password, email-Id is saved by default when using webviews. The default behaviour can be overridden by using the below code snippet:
+* The form data such as userId , password, email-Id is saved by default when using webviews. The default behaviour can be overridden by using the below code snippet:
 	
 
-	WebView webView = (WebView) findViewById(R.id.webview);
-	webView.getSettings().setSaveFormData(false);
-	webView.getSettings().setSavePassword(false); // Not needed for API level 18 or greater (deprecated)
+		WebView webView = (WebView) findViewById(R.id.webview);
+		webView.getSettings().setSaveFormData(false);
+		webView.getSettings().setSavePassword(false); // Not needed for API level 18 or greater (deprecated)
 
 
-	In cases, where there is need to save form data but needs to be cleared at some point, such as on restart of application, the below code snippet can be used:
+		In cases, where there is need to save form data but needs to be cleared at some point, such as on restart of application, the below code snippet can be used:
 
-	WebView webView = (WebView) findViewById(R.id.webview);
-	webView.loadUrl(“https://example.com/”)
-	webView.clearFormData();
+		WebView webView = (WebView) findViewById(R.id.webview);
+		webView.loadUrl(“https://example.com/”)
+		webView.clearFormData();
 
 
 2. Disable cookies :
 
-	For API level 21 and above :
+		For API level 21 and above :
 
-	CookieManager cm = CookieManager.getInstance();
-	/* to disable all cookies */ 
-       	 cm.setAcceptCookie(false);
+		CookieManager cm = CookieManager.getInstance();
+		/* to disable all cookies */ 
+	       	 cm.setAcceptCookie(false);
 
-	/* to disable thirdparty cookies */
-        	cm.setAcceptThirdPartyCookies(mBrowser, false);
+		/* to disable thirdparty cookies */
+	        	cm.setAcceptThirdPartyCookies(mBrowser, false);
+		
+		/* to remove all the cookies of the application from the device */
+	        	cm.removeAllCookies(mCookieDeleted);
+
+		/* to remove a session specific cookies from the device */
+	        	cm.removeSessionCookies(mCookieDeleted);
+
+		/* the callback method */
+
+		private ValueCallback<Boolean> mCookieDeleted = new ValueCallback<Boolean>() {
+	        	@Override
+	        	public void onReceiveValue(Boolean value) {
+	            		Log.d(TAG, "cookies deleted");
+	            	// do whatever you want to do after the cookie is deleted; eg : reload tew page etc.
+	        }
+	    };
+
 	
-	/* to remove all the cookies of the application from the device */
-        	cm.removeAllCookies(mCookieDeleted);
+		For API level below 21:
+		
+		CookieManager cm = CookieManager.getInstance();
+		/* to disable all cookies */ 
+	       	 cm.setAcceptCookie(false);
+		
+		/* to remove all the cookies of the application from the device */
+	        	cm.removeAllCookie();
 
-	/* to remove a session specific cookies from the device */
-        	cm.removeSessionCookies(mCookieDeleted);
-
-	/* the callback method */
-
-	private ValueCallback<Boolean> mCookieDeleted = new ValueCallback<Boolean>() {
-        	@Override
-        	public void onReceiveValue(Boolean value) {
-            		Log.d(TAG, "cookies deleted");
-            	// do whatever you want to do after the cookie is deleted; eg : reload tew page etc.
-        }
-    };
-
-	
-	For API level below 21:
-	
-	CookieManager cm = CookieManager.getInstance();
-	/* to disable all cookies */ 
-       	 cm.setAcceptCookie(false);
-	
-	/* to remove all the cookies of the application from the device */
-        	cm.removeAllCookie();
-
-	/* to remove a session specific cookies from the device */
-        	cm.removeSessionCookie();		
+		/* to remove a session specific cookies from the device */
+	        	cm.removeSessionCookie();		
 
 
 Further Reads:
