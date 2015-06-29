@@ -86,7 +86,7 @@ If the application accesses any sensitive data with a WebView, you may want to u
 		webView.clearFormData();
 
 
-2. Disable cookies :
+* Disable cookies :
 
 		For API level 21 and above :
 
